@@ -23,6 +23,7 @@ namespace DollhouseCharacter.Character
         public override void EnterState()
         {
             FlipToFaceHoldingObject();
+
             characterAnimator.SetBool("hold", true);
 
             if (holdTarget.TryGetComponent<IDragable>(out var dragable))

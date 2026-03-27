@@ -25,7 +25,7 @@ namespace DollhouseCharacter
             originalGravityScale = rigidBody2D.gravityScale;
 
             rigidBody2D.angularVelocity = 0;
-            rigidBody2D.linearVelocityY = 0;
+            rigidBody2D.linearVelocity = Vector2.zero;
             rigidBody2D.gravityScale = 0f;
 
             rigidBody2D.bodyType = RigidbodyType2D.Kinematic;

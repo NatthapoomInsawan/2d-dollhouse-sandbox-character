@@ -7,6 +7,7 @@ namespace DollhouseCharacter
     public class TriggerBox2D : MonoBehaviour
     {
         public event Action<TriggerBox2D, Collider2D> OnHitBoxColliderEnter;
+        public event Action<TriggerBox2D, Collider2D> OnHitBoxColliderStay;
         public event Action<TriggerBox2D, Collider2D> OnHitBoxColliderExit;
 
         [Header("Collider")]
@@ -22,7 +23,7 @@ namespace DollhouseCharacter
         }
 
         private void OnTriggerEnter2D(Collider2D collision) => OnHitBoxColliderEnter?.Invoke(this, collision);
-
+        private void OnTriggerStay2D(Collider2D collision) => OnHitBoxColliderStay?.Invoke(this, collision);
         private void OnTriggerExit2D(Collider2D collision) => OnHitBoxColliderExit?.Invoke(this, collision);
 
     }

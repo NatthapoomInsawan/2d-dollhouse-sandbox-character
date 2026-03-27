@@ -7,9 +7,9 @@ namespace DollhouseCharacter.Character
     public class CharacterColliderController : MonoBehaviour
     {
         public event Action OnHeadColliderTriggerEnter;
-        public event Action OnHeadColliderTriggerExit;
 
         public event Action<Collider2D> OnHandColliderTriggerEnter;
+        public event Action<Collider2D> OnHandColliderTriggerStay;
         public event Action OnHandColliderTriggerExit;
         public Transform HolderTransform => holderTransform;
 
@@ -26,6 +26,8 @@ namespace DollhouseCharacter.Character
             handTriggers.ForEach(handTrigger => handTrigger.OnHitBoxColliderEnter += TriggerEnter);
 
             headTrigger.OnHitBoxColliderExit += TriggerExit;
+            handTriggers.ForEach(handTrigger => handTrigger.OnHitBoxColliderStay += TriggerStay);
+
             handTriggers.ForEach(handTrigger => handTrigger.OnHitBoxColliderExit += TriggerExit);
         }
 
@@ -42,13 +44,20 @@ namespace DollhouseCharacter.Character
             }
         }
 
+        private void TriggerStay(TriggerBox2D triggerBox, Collider2D collider2D)
+        {
+            switch (triggerBox)
+            {
+                case TriggerBox2D hand when handTriggers.Contains(hand):
+                    OnHandColliderTriggerStay?.Invoke(collider2D);
+                    break;
+            }
+        }
+
         private void TriggerExit(TriggerBox2D triggerBox, Collider2D collider2D)
         {
             switch (triggerBox)
             {
-                case TriggerBox2D head when head == headTrigger:
-                    OnHeadColliderTriggerExit?.Invoke();
-                    break;
                 case TriggerBox2D hand when handTriggers.Contains(hand):
                     OnHandColliderTriggerExit?.Invoke();
                     break;

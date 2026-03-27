@@ -17,7 +17,9 @@ namespace DollhouseCharacter.Character
         private void Start()
         {
             colliderController.OnHeadColliderTriggerEnter += () => { SetTriggerState(new CharacterReactToStackingState(characterAnimator)); };
-            colliderController.OnHandColliderTriggerEnter += OnHandColliderEnter;
+            colliderController.OnHandColliderTriggerEnter += OnHandColliderEnterStay;
+
+            colliderController.OnHandColliderTriggerStay += OnHandColliderEnterStay;
 
             colliderController.OnHandColliderTriggerExit += OnHandColliderExit;
         }
@@ -47,7 +49,7 @@ namespace DollhouseCharacter.Character
             SetState(nextState);
         }
 
-        private async void OnHandColliderEnter(Collider2D collider2D)
+        private async void OnHandColliderEnterStay(Collider2D collider2D)
         {
             if (currentState is CharacterHoldState || currentState is CharacterThrowState)
                 return;
