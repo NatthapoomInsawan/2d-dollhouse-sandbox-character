@@ -8,6 +8,8 @@ namespace DollhouseCharacter.Character
     {
         public event Action OnHeadColliderTriggerEnter;
 
+        public event Action<Collider2D> OnMouthColliderTriggerEnter;
+
         public event Action<Collider2D> OnHandColliderTriggerEnter;
         public event Action<Collider2D> OnHandColliderTriggerStay;
         public event Action OnHandColliderTriggerExit;
@@ -15,6 +17,8 @@ namespace DollhouseCharacter.Character
 
         [Header("Colliders")]
         [SerializeField] private TriggerBox2D headTrigger;
+        [SerializeField] private TriggerBox2D mouthTrigger;
+
         [SerializeField] private List<TriggerBox2D> handTriggers;
 
         [Header("Transform")]
@@ -37,6 +41,9 @@ namespace DollhouseCharacter.Character
             {
                 case TriggerBox2D head when head == headTrigger:
                     OnHeadColliderTriggerEnter?.Invoke();
+                    break;
+                case TriggerBox2D mouth when mouth == mouthTrigger:
+                    OnMouthColliderTriggerEnter?.Invoke(collider2D);
                     break;
                 case TriggerBox2D hand when handTriggers.Contains(hand):
                     OnHandColliderTriggerEnter?.Invoke(collider2D);
@@ -62,7 +69,6 @@ namespace DollhouseCharacter.Character
                     OnHandColliderTriggerExit?.Invoke();
                     break;
             }
-
         }
 
     }

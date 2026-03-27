@@ -13,7 +13,7 @@ namespace DollhouseCharacter.Character
 
         public override void EnterState()
         {
-            characterAnimator.Play("idle", 0, 0f);
+            characterAnimator.SetTrigger("idle");
         }
     }
 }

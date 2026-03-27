@@ -22,6 +22,8 @@ namespace DollhouseCharacter.Character
             colliderController.OnHandColliderTriggerStay += OnHandColliderEnterStay;
 
             colliderController.OnHandColliderTriggerExit += OnHandColliderExit;
+
+            SetState(new CharacterIdleState(characterAnimator));
         }
 
         private void SetState(CharacterState state)
@@ -74,6 +76,8 @@ namespace DollhouseCharacter.Character
             {
                 if (holdState.HoldingObject != null)
                     return;
+                else
+                    holdState.ExitState();
             }
 
             SetState(new CharacterIdleState(characterAnimator));
