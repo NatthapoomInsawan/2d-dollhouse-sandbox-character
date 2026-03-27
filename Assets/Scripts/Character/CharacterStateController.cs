@@ -1,10 +1,17 @@
 using Cysharp.Threading.Tasks;
+using DollhouseCharacter.Interfaces;
+using System;
 using UnityEngine;
 
 namespace DollhouseCharacter.Character
 {
-    public class CharacterStateController : MonoBehaviour
+    public class CharacterStateController : MonoBehaviour, INeedInitialize
     {
+        public event Action<int> OnHungerUpate;
+        
+        public bool IsInit { get; private set; }
+        public int MaxHunger => maxHunger;
+
         [Header("Reference")]
         [SerializeField] private CharacterColliderController colliderController;
         [SerializeField] private Animator characterAnimator;
@@ -12,11 +19,16 @@ namespace DollhouseCharacter.Character
         [Header("Settings")]
         [SerializeField] private float holdTime = 1.5f;
 
+        [Header("Data State")]
+        [SerializeField] private int hunger;
+        [SerializeField] private int maxHunger = 100;
+
         private CharacterState currentState;
 
         private void Start()
         {
             colliderController.OnHeadColliderTriggerEnter += () => { SetTriggerState(new CharacterReactToStackingState(characterAnimator)); };
+            colliderController.OnMouthColliderTriggerEnter += OnMouthTriggerEnter;
             colliderController.OnHandColliderTriggerEnter += OnHandColliderEnterStay;
 
             colliderController.OnHandColliderTriggerStay += OnHandColliderEnterStay;
@@ -24,6 +36,14 @@ namespace DollhouseCharacter.Character
             colliderController.OnHandColliderTriggerExit += OnHandColliderExit;
 
             SetState(new CharacterIdleState(characterAnimator));
+
+            InitialDataInit();
+        }
+
+        private void InitialDataInit()
+        {
+            IsInit = true;
+            OnHungerUpate?.Invoke(hunger);
         }
 
         private void SetState(CharacterState state)
@@ -81,6 +101,22 @@ namespace DollhouseCharacter.Character
             }
 
             SetState(new CharacterIdleState(characterAnimator));
+        }
+
+        private void OnMouthTriggerEnter(Collider2D collider2D)
+        {
+            if (currentState is CharacterHoldState)
+                return;
+
+            CharacterEatState eatState = new CharacterEatState(characterAnimator, collider2D.transform);
+
+            eatState.ModifyHunger += (value) =>
+            {
+                hunger += value;
+                OnHungerUpate?.Invoke(hunger);
+            };
+            
+            SetTriggerState(eatState);
         }
 
     }

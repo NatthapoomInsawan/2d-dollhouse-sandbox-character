@@ -28,7 +28,9 @@ namespace DollhouseCharacter.Character
 
                 rigidbody2D.bodyType = RigidbodyType2D.Dynamic;
                 rigidbody2D.simulated = true;
-                rigidbody2D.AddForce(new Vector2(characterAnimator.transform.localScale.x, 1) * throwMultiplier, ForceMode2D.Impulse);
+
+                Transform rootTransform = characterAnimator.transform.Find("Skeletal");
+                rigidbody2D.AddForce(new Vector2(rootTransform.localScale.x, 1) * throwMultiplier, ForceMode2D.Impulse);
 
                 await UniTask.WaitForSeconds(throwDelay);
 

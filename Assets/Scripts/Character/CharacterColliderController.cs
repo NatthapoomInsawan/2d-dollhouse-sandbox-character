@@ -9,9 +9,10 @@ namespace DollhouseCharacter.Character
         public event Action OnHeadColliderTriggerEnter;
 
         public event Action<Collider2D> OnMouthColliderTriggerEnter;
-
         public event Action<Collider2D> OnHandColliderTriggerEnter;
+
         public event Action<Collider2D> OnHandColliderTriggerStay;
+
         public event Action OnHandColliderTriggerExit;
         public Transform HolderTransform => holderTransform;
 
@@ -28,10 +29,11 @@ namespace DollhouseCharacter.Character
         {
             headTrigger.OnHitBoxColliderEnter += TriggerEnter;
             handTriggers.ForEach(handTrigger => handTrigger.OnHitBoxColliderEnter += TriggerEnter);
+            mouthTrigger.OnHitBoxColliderEnter += TriggerEnter;
 
-            headTrigger.OnHitBoxColliderExit += TriggerExit;
             handTriggers.ForEach(handTrigger => handTrigger.OnHitBoxColliderStay += TriggerStay);
 
+            headTrigger.OnHitBoxColliderExit += TriggerExit;
             handTriggers.ForEach(handTrigger => handTrigger.OnHitBoxColliderExit += TriggerExit);
         }
 
@@ -39,11 +41,11 @@ namespace DollhouseCharacter.Character
         {
             switch (triggerBox)
             {
-                case TriggerBox2D head when head == headTrigger:
-                    OnHeadColliderTriggerEnter?.Invoke();
-                    break;
                 case TriggerBox2D mouth when mouth == mouthTrigger:
                     OnMouthColliderTriggerEnter?.Invoke(collider2D);
+                    break;
+                case TriggerBox2D head when head == headTrigger:
+                    OnHeadColliderTriggerEnter?.Invoke();
                     break;
                 case TriggerBox2D hand when handTriggers.Contains(hand):
                     OnHandColliderTriggerEnter?.Invoke(collider2D);

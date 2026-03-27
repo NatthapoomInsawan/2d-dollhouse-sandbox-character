@@ -53,10 +53,13 @@ namespace DollhouseCharacter.Character
             if (holdTarget == null) return;
 
             Vector2 directionToHoldingObject = holdTarget.position - characterAnimator.transform.position;
+
+            Transform rootTransform = characterAnimator.transform.Find("Skeletal");
+
             if (directionToHoldingObject.x > 0)
-                characterAnimator.transform.localScale = new Vector2(1, 1);
+                rootTransform.transform.localScale = new Vector2(1, 1);
             else
-                characterAnimator.transform.localScale = new Vector2(-1, 1);
+                rootTransform.transform.localScale = new Vector2(-1, 1);
         }
     }
 }
