@@ -6,7 +6,8 @@ namespace DollhouseCharacter
     [RequireComponent(typeof(Collider2D))]
     public class TriggerBox2D : MonoBehaviour
     {
-        public event Action<TriggerBox2D> OnHitBoxColliderTriggered;
+        public event Action<TriggerBox2D, Collider2D> OnHitBoxColliderEnter;
+        public event Action<TriggerBox2D, Collider2D> OnHitBoxColliderExit;
 
         [Header("Collider")]
         [SerializeField] private Collider2D hitBoxCollider;
@@ -20,7 +21,9 @@ namespace DollhouseCharacter
             }
         }
 
-        private void OnTriggerEnter2D(Collider2D collision) => OnHitBoxColliderTriggered?.Invoke(this);
+        private void OnTriggerEnter2D(Collider2D collision) => OnHitBoxColliderEnter?.Invoke(this, collision);
+
+        private void OnTriggerExit2D(Collider2D collision) => OnHitBoxColliderExit?.Invoke(this, collision);
 
     }
 }

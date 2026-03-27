@@ -6,6 +6,10 @@ namespace DollhouseCharacter
     [RequireComponent(typeof(Rigidbody2D))]
     public class DragablePhysics : MonoBehaviour, IDragable
     {
+        public bool IsDragging { get; private set; }
+
+        public Rigidbody2D Rigidbody2D => rigidBody2D;
+
         [Header("References")]
         [SerializeField] private Rigidbody2D rigidBody2D;
 
@@ -23,6 +27,10 @@ namespace DollhouseCharacter
             rigidBody2D.angularVelocity = 0;
             rigidBody2D.linearVelocityY = 0;
             rigidBody2D.gravityScale = 0f;
+
+            rigidBody2D.bodyType = RigidbodyType2D.Kinematic;
+
+            IsDragging = true;
         }
 
         public void UpdateDrag(Vector2 pointerPos)
@@ -36,9 +44,12 @@ namespace DollhouseCharacter
         public void EndDrag()
         {
             Vector3 moveVector = (Camera.main.ScreenToWorldPoint(pointerPos) - transform.position) * dragPhysicsScale;
-            
+
+            rigidBody2D.bodyType = RigidbodyType2D.Dynamic;
             rigidBody2D.AddForce(moveVector, ForceMode2D.Impulse);
             rigidBody2D.gravityScale = originalGravityScale;
+
+            IsDragging = false;
         }
     }
 }

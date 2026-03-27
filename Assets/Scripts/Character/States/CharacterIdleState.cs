@@ -4,9 +4,16 @@ namespace DollhouseCharacter.Character
 {
     public class CharacterIdleState : CharacterState
     {
+        private Animator characterAnimator;
+
+        public CharacterIdleState(Animator characterAnimator)
+        {
+            this.characterAnimator = characterAnimator;
+        }
+
         public override void EnterState()
         {
-            Debug.Log("Entering Idle State");
+            characterAnimator.Play("idle", 0, 0f);
         }
     }
 }

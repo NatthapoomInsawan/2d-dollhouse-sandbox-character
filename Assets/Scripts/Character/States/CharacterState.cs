@@ -11,5 +11,6 @@ namespace DollhouseCharacter.Character
         {
             OnExitState?.Invoke();
         }
+        public virtual CharacterState GetNextState() { return null; }
     }
 }

@@ -1,28 +1,59 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace DollhouseCharacter.Character
 {
     public class CharacterColliderController : MonoBehaviour
     {
-        public event Action OnHeadColliderTriggered;
+        public event Action OnHeadColliderTriggerEnter;
+        public event Action OnHeadColliderTriggerExit;
+
+        public event Action<Collider2D> OnHandColliderTriggerEnter;
+        public event Action OnHandColliderTriggerExit;
+        public Transform HolderTransform => holderTransform;
 
         [Header("Colliders")]
         [SerializeField] private TriggerBox2D headTrigger;
+        [SerializeField] private List<TriggerBox2D> handTriggers;
+
+        [Header("Transform")]
+        [SerializeField] private Transform holderTransform;
 
         private void Start()
         {
-            headTrigger.OnHitBoxColliderTriggered += OnTrigger;
+            headTrigger.OnHitBoxColliderEnter += TriggerEnter;
+            handTriggers.ForEach(handTrigger => handTrigger.OnHitBoxColliderEnter += TriggerEnter);
+
+            headTrigger.OnHitBoxColliderExit += TriggerExit;
+            handTriggers.ForEach(handTrigger => handTrigger.OnHitBoxColliderExit += TriggerExit);
         }
 
-        private void OnTrigger(TriggerBox2D triggerBox)
+        private void TriggerEnter(TriggerBox2D triggerBox, Collider2D collider2D)
         {
             switch (triggerBox)
             {
                 case TriggerBox2D head when head == headTrigger:
-                    OnHeadColliderTriggered?.Invoke();
+                    OnHeadColliderTriggerEnter?.Invoke();
+                    break;
+                case TriggerBox2D hand when handTriggers.Contains(hand):
+                    OnHandColliderTriggerEnter?.Invoke(collider2D);
                     break;
             }
+        }
+
+        private void TriggerExit(TriggerBox2D triggerBox, Collider2D collider2D)
+        {
+            switch (triggerBox)
+            {
+                case TriggerBox2D head when head == headTrigger:
+                    OnHeadColliderTriggerExit?.Invoke();
+                    break;
+                case TriggerBox2D hand when handTriggers.Contains(hand):
+                    OnHandColliderTriggerExit?.Invoke();
+                    break;
+            }
+
         }
 
     }
