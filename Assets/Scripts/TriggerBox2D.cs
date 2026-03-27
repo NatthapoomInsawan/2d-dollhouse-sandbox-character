@@ -1,0 +1,26 @@
+using System;
+using UnityEngine;
+
+namespace DollhouseCharacter
+{
+    [RequireComponent(typeof(Collider2D))]
+    public class TriggerBox2D : MonoBehaviour
+    {
+        public event Action<TriggerBox2D> OnHitBoxColliderTriggered;
+
+        [Header("Collider")]
+        [SerializeField] private Collider2D hitBoxCollider;
+
+        private void Start()
+        {
+            if (hitBoxCollider == null)
+            {
+                hitBoxCollider = GetComponent<Collider2D>();
+                hitBoxCollider.isTrigger = true;
+            }
+        }
+
+        private void OnTriggerEnter2D(Collider2D collision) => OnHitBoxColliderTriggered?.Invoke(this);
+
+    }
+}
