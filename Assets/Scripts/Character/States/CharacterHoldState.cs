@@ -1,6 +1,5 @@
 using Cysharp.Threading.Tasks;
 using DollhouseCharacter.Interfaces;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace DollhouseCharacter.Character
