@@ -1,4 +1,3 @@
-using DollhouseCharacter.Interfaces;
 using System;
 using UnityEngine;
 
@@ -10,30 +9,18 @@ namespace DollhouseCharacter.Character
 
         private Animator characterAnimator;
 
-        private Transform foodTransform;
+        private FoodObject foodObject;
 
-        public CharacterEatState(Animator characterAnimator, Transform foodTransform) 
+        public CharacterEatState(Animator characterAnimator, FoodObject foodObject) 
         {
             this.characterAnimator = characterAnimator;
-            this.foodTransform = foodTransform;
+            this.foodObject = foodObject;
         }
         public override void EnterState()
         {
-            if (foodTransform.TryGetComponent<IDragable>(out var dragable))
-            {
-                if (dragable.IsDragging)
-                {
-                    ExitState();
-                    return;
-                }
-            }
-
-            if (foodTransform.TryGetComponent<FoodObject>(out var foodObject))
-            {
-                characterAnimator.SetTrigger("eat");
-                ModifyHunger?.Invoke(foodObject.HungerModifier);
-                UnityEngine.Object.Destroy(foodObject.gameObject);
-            }
+            characterAnimator.SetTrigger("eat");
+            ModifyHunger?.Invoke(foodObject.HungerModifier);
+            UnityEngine.Object.Destroy(foodObject.gameObject);
         }
     }
 }

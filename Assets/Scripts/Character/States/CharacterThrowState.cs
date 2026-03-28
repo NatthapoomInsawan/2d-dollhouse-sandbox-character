@@ -24,7 +24,8 @@ namespace DollhouseCharacter.Character
             {
                 characterAnimator.SetTrigger("throw");
 
-                await UniTask.WaitForSeconds(characterAnimator.GetCurrentAnimatorClipInfo(0).Length/3);
+                if (await UniTask.WaitForSeconds(characterAnimator.GetCurrentAnimatorClipInfo(0).Length/3, cancellationToken: cts.Token).SuppressCancellationThrow())
+                    return;
 
                 rigidbody2D.bodyType = RigidbodyType2D.Dynamic;
                 rigidbody2D.simulated = true;
@@ -32,7 +33,8 @@ namespace DollhouseCharacter.Character
                 Transform rootTransform = characterAnimator.transform.Find("Skeletal");
                 rigidbody2D.AddForce(new Vector2(rootTransform.localScale.x, 1) * throwMultiplier, ForceMode2D.Impulse);
 
-                await UniTask.WaitForSeconds(throwDelay);
+                if (await UniTask.WaitForSeconds(throwDelay, cancellationToken: cts.Token).SuppressCancellationThrow())
+                    return;
 
                 ExitState();
             }

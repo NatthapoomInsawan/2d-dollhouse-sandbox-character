@@ -6,12 +6,10 @@ namespace DollhouseCharacter.Character
 {
     public class CharacterColliderController : MonoBehaviour
     {
-        public event Action OnHeadColliderTriggerEnter;
-
-        public event Action<Collider2D> OnMouthColliderTriggerEnter;
-        public event Action<Collider2D> OnHandColliderTriggerEnter;
+        public event Action<Collider2D> OnHeadColliderTriggerEnter;
 
         public event Action<Collider2D> OnHandColliderTriggerStay;
+        public event Action<Collider2D> OnMouthColliderTriggerStay;
 
         public event Action OnHandColliderTriggerExit;
         public Transform HolderTransform => holderTransform;
@@ -32,6 +30,7 @@ namespace DollhouseCharacter.Character
             mouthTrigger.OnHitBoxColliderEnter += TriggerEnter;
 
             handTriggers.ForEach(handTrigger => handTrigger.OnHitBoxColliderStay += TriggerStay);
+            mouthTrigger.OnHitBoxColliderStay += TriggerStay;
 
             headTrigger.OnHitBoxColliderExit += TriggerExit;
             handTriggers.ForEach(handTrigger => handTrigger.OnHitBoxColliderExit += TriggerExit);
@@ -41,14 +40,8 @@ namespace DollhouseCharacter.Character
         {
             switch (triggerBox)
             {
-                case TriggerBox2D mouth when mouth == mouthTrigger:
-                    OnMouthColliderTriggerEnter?.Invoke(collider2D);
-                    break;
                 case TriggerBox2D head when head == headTrigger:
-                    OnHeadColliderTriggerEnter?.Invoke();
-                    break;
-                case TriggerBox2D hand when handTriggers.Contains(hand):
-                    OnHandColliderTriggerEnter?.Invoke(collider2D);
+                    OnHeadColliderTriggerEnter?.Invoke(collider2D);
                     break;
             }
         }
@@ -59,6 +52,9 @@ namespace DollhouseCharacter.Character
             {
                 case TriggerBox2D hand when handTriggers.Contains(hand):
                     OnHandColliderTriggerStay?.Invoke(collider2D);
+                    break;
+                case TriggerBox2D mouth when mouth == mouthTrigger:
+                    OnMouthColliderTriggerStay?.Invoke(collider2D);
                     break;
             }
         }

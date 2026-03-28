@@ -1,6 +1,8 @@
 using Cysharp.Threading.Tasks;
+using DollhouseCharacter.Events;
 using DollhouseCharacter.Interfaces;
 using System;
+using System.Threading;
 using UnityEngine;
 
 namespace DollhouseCharacter.Character
@@ -11,6 +13,8 @@ namespace DollhouseCharacter.Character
         
         public bool IsInit { get; private set; }
         public int MaxHunger => maxHunger;
+
+        [SerializeField] private BoolGameEvent testEvent;
 
         [Header("Reference")]
         [SerializeField] private CharacterColliderController colliderController;
@@ -27,11 +31,10 @@ namespace DollhouseCharacter.Character
 
         private void Start()
         {
-            colliderController.OnHeadColliderTriggerEnter += () => { SetTriggerState(new CharacterReactToStackingState(characterAnimator)); };
-            colliderController.OnMouthColliderTriggerEnter += OnMouthTriggerEnter;
-            colliderController.OnHandColliderTriggerEnter += OnHandColliderEnterStay;
+            colliderController.OnHeadColliderTriggerEnter += OnHeadColliderEnter;
 
-            colliderController.OnHandColliderTriggerStay += OnHandColliderEnterStay;
+            colliderController.OnHandColliderTriggerStay += OnHandColliderStay;
+            colliderController.OnMouthColliderTriggerStay += OnMouthColliderStay;
 
             colliderController.OnHandColliderTriggerExit += OnHandColliderExit;
 
@@ -71,7 +74,15 @@ namespace DollhouseCharacter.Character
             SetState(nextState);
         }
 
-        private async void OnHandColliderEnterStay(Collider2D collider2D)
+        private void OnHeadColliderEnter(Collider2D collider2D)
+        {
+            if (collider2D.TryGetComponent<IDragable>(out var dragable) && dragable.IsDragging)
+                return;
+
+            characterAnimator.SetTrigger("stacking");
+        }
+
+        private async void OnHandColliderStay(Collider2D collider2D)
         {
             if (currentState is CharacterHoldState || currentState is CharacterThrowState)
                 return;
@@ -80,12 +91,13 @@ namespace DollhouseCharacter.Character
 
             SetState(holdState);
 
-            await UniTask.WaitUntil(() => holdState != null && holdState.HoldingObject != null);
+            CancellationToken cancelToken = holdState.Cts.Token;
 
-            if (holdState == null)
+            if (await UniTask.WaitUntil(() => holdState != null && holdState.HoldingObject != null, cancellationToken: cancelToken).SuppressCancellationThrow())
                 return;
 
-            await UniTask.WaitForSeconds(holdTime);
+            if (await UniTask.WaitForSeconds(holdTime, cancellationToken: cancelToken).SuppressCancellationThrow())
+                return;
 
             SetTriggerState(new CharacterThrowState(characterAnimator, holdState));
         }
@@ -103,12 +115,18 @@ namespace DollhouseCharacter.Character
             SetState(new CharacterIdleState(characterAnimator));
         }
 
-        private void OnMouthTriggerEnter(Collider2D collider2D)
+        private void OnMouthColliderStay(Collider2D collider2D)
         {
             if (currentState is CharacterHoldState)
                 return;
 
-            CharacterEatState eatState = new CharacterEatState(characterAnimator, collider2D.transform);
+            if (collider2D.TryGetComponent<IDragable>(out var dragable) && dragable.IsDragging)
+                return;
+
+            if (!collider2D.TryGetComponent<FoodObject>(out var foodObject))
+                return;
+
+            CharacterEatState eatState = new CharacterEatState(characterAnimator, foodObject);
 
             eatState.ModifyHunger += (value) =>
             {
