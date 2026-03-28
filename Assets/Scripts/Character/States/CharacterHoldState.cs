@@ -1,4 +1,6 @@
+using Cysharp.Threading.Tasks;
 using DollhouseCharacter.Interfaces;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace DollhouseCharacter.Character
@@ -13,6 +15,8 @@ namespace DollhouseCharacter.Character
         private Transform holdTarget;
         private Transform holdingObject;
 
+        private float holdTime = 1.5f;
+
         public CharacterHoldState(Animator characterAnimator, Transform holderTransform, Transform holdTarget) 
         {
             this.characterAnimator = characterAnimator;
@@ -20,7 +24,7 @@ namespace DollhouseCharacter.Character
             this.holdTarget = holdTarget;
         }
 
-        public override void EnterState()
+        public override async void EnterState()
         {
             FlipToFaceHoldingObject();
 
@@ -40,6 +44,11 @@ namespace DollhouseCharacter.Character
                     }
                 }
             }
+
+            if (await UniTask.WaitForSeconds(holdTime, cancellationToken: cts.Token).SuppressCancellationThrow())
+                return;
+
+            ExitState();
         }
 
         public override void ExitState()
@@ -47,6 +56,8 @@ namespace DollhouseCharacter.Character
             characterAnimator.SetBool("hold", false);
             base.ExitState();
         }
+
+        public override CharacterState GetNextState() => holdingObject == null ? null : new CharacterThrowState(characterAnimator, this);
 
         private void FlipToFaceHoldingObject()
         {

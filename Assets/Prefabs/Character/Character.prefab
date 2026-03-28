@@ -161,13 +161,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1337182197721138458}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: -0.013351385, w: 0.9999109}
-  m_LocalPosition: {x: 0.43650687, y: 0.0000000059288467, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: 0.29506314, w: 0.9554778}
+  m_LocalPosition: {x: 0.43650866, y: 0.0000010281801, z: 0}
   m_LocalScale: {x: 1.0000002, y: 1.0000002, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2387139163412913022}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 34.323}
 --- !u!1 &1392705581326283400
 GameObject:
   m_ObjectHideFlags: 0
@@ -601,6 +601,7 @@ GameObject:
   - component: {fileID: 1887519848212891109}
   - component: {fileID: 6025439244139188231}
   - component: {fileID: 1361649762152743509}
+  - component: {fileID: 8283285519012024495}
   m_Layer: 0
   m_Name: Character
   m_TagString: Untagged
@@ -732,6 +733,35 @@ MonoBehaviour:
   - {fileID: 7753638461978140186}
   - {fileID: 8560953213868860936}
   holderTransform: {fileID: 5361118745798895534}
+--- !u!114 &8283285519012024495
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2654694028573901543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bf702f15b993604882b84a40682d30d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DollhouseCharacter.Events.BoolGameEventListener
+  eventBindings:
+  - gameEvent: {fileID: 11400000, guid: a208bb32fc322764184fc94ac7be7dc0, type: 2}
+    response:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 5113772944079192388}
+          m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
+          m_MethodName: SetTrigger
+          m_Mode: 5
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: surprise
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &3304196828670324011
 GameObject:
   m_ObjectHideFlags: 0
@@ -1187,8 +1217,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.039273303, y: 0.85980904}
-  m_Size: {x: 1.4857754, y: 0.11324645}
+  m_Offset: {x: -0.028661495, y: 0.859809}
+  m_Size: {x: 1.4269239, y: 0.11324643}
   m_Direction: 1
 --- !u!1 &4496668747572427445
 GameObject:
@@ -1991,7 +2021,7 @@ Transform:
   m_GameObject: {fileID: 6896344470300041501}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0, z: -0.98845375, w: 0.15152286}
-  m_LocalPosition: {x: 0.3870992, y: -0.16356845, z: 0}
+  m_LocalPosition: {x: 0.36, y: -0.25, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2867,8 +2897,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.03171903, y: 0.029241532}
-  m_Size: {x: 0.87649417, y: 0.34849188}
+  m_Offset: {x: 0.038161397, y: 0.01733285}
+  m_Size: {x: 1.0505455, y: 0.37231126}
   m_Direction: 1
 --- !u!114 &1166618373186448160
 MonoBehaviour:
@@ -2910,7 +2940,7 @@ Transform:
   m_GameObject: {fileID: 8986739322958808716}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.17773438, y: 1.9492188, z: 0}
+  m_LocalPosition: {x: 0.66, y: 2.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -8,8 +8,8 @@ namespace DollhouseCharacter.Character
         private Animator characterAnimator;
         private CharacterHoldState characterHoldState;
 
-        private float throwMultiplier = 5f;
-        private float throwDelay = 0.25f;
+        private float throwMultiplier = 4.5f;
+        private float throwDelay = 0.5f;
 
         public CharacterThrowState(Animator characterAnimator, CharacterHoldState characterHoldState)
         {
@@ -18,8 +18,8 @@ namespace DollhouseCharacter.Character
         }
         public override async void EnterState()
         {
-            characterHoldState.ExitState();
             characterHoldState.HoldingObject.SetParent(null);
+
             if (characterHoldState.HoldingObject.TryGetComponent<Rigidbody2D>(out var rigidbody2D))
             {
                 characterAnimator.SetTrigger("throw");
@@ -28,6 +28,8 @@ namespace DollhouseCharacter.Character
                     return;
 
                 rigidbody2D.bodyType = RigidbodyType2D.Dynamic;
+                rigidbody2D.linearVelocity = Vector2.zero;
+                rigidbody2D.angularVelocity = 0;
                 rigidbody2D.simulated = true;
 
                 Transform rootTransform = characterAnimator.transform.Find("Skeletal");
@@ -35,7 +37,6 @@ namespace DollhouseCharacter.Character
 
                 if (await UniTask.WaitForSeconds(throwDelay, cancellationToken: cts.Token).SuppressCancellationThrow())
                     return;
-
                 ExitState();
             }
         }

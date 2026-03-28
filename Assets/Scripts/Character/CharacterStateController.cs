@@ -1,8 +1,6 @@
 using Cysharp.Threading.Tasks;
-using DollhouseCharacter.Events;
 using DollhouseCharacter.Interfaces;
 using System;
-using System.Threading;
 using UnityEngine;
 
 namespace DollhouseCharacter.Character
@@ -17,9 +15,6 @@ namespace DollhouseCharacter.Character
         [Header("Reference")]
         [SerializeField] private CharacterColliderController colliderController;
         [SerializeField] private Animator characterAnimator;
-
-        [Header("Settings")]
-        [SerializeField] private float holdTime = 1.5f;
 
         [Header("Data State")]
         [SerializeField] private int hunger;
@@ -49,20 +44,30 @@ namespace DollhouseCharacter.Character
 
         private void SetState(CharacterState state)
         {
-            currentState?.ExitState();        
+            if (currentState != null && !currentState.Cts.IsCancellationRequested)
+                currentState.ExitState();        
+
             currentState = state;
 
-            if (currentState.GetNextState() != null)
-                currentState.OnExitState += () => HandleExitState(currentState);
+            currentState.OnExitState += () => 
+            {
+                if (currentState?.GetNextState() != null)
+                    HandleExitState(currentState);
+            };
 
-            currentState.EnterState();
+            currentState?.EnterState();
         }
 
         private void SetTriggerState(CharacterState state)
         {
             state.EnterState();
-            if (state.GetNextState() != null)
-                state.OnExitState += () => HandleExitState(state);
+
+            state.OnExitState += () =>
+            {
+                if (state?.GetNextState() != null)
+                    HandleExitState(state);
+            };
+
         }
 
         private void HandleExitState(CharacterState currentState)
@@ -80,7 +85,7 @@ namespace DollhouseCharacter.Character
             characterAnimator.SetTrigger("stacking");
         }
 
-        private async void OnHandColliderStay(Collider2D collider2D)
+        private void OnHandColliderStay(Collider2D collider2D)
         {
             if (currentState is CharacterHoldState || currentState is CharacterThrowState)
                 return;
@@ -88,20 +93,12 @@ namespace DollhouseCharacter.Character
             CharacterHoldState holdState = new CharacterHoldState(characterAnimator, colliderController.HolderTransform, collider2D.transform);
 
             SetState(holdState);
-
-            CancellationToken cancelToken = holdState.Cts.Token;
-
-            if (await UniTask.WaitUntil(() => holdState != null && holdState.HoldingObject != null, cancellationToken: cancelToken).SuppressCancellationThrow())
-                return;
-
-            if (await UniTask.WaitForSeconds(holdTime, cancellationToken: cancelToken).SuppressCancellationThrow())
-                return;
-
-            SetTriggerState(new CharacterThrowState(characterAnimator, holdState));
         }
 
         private void OnHandColliderExit()
         {
+            if (currentState is CharacterThrowState)
+                return;
             if (currentState is CharacterHoldState holdState)
             {
                 if (holdState.HoldingObject != null)
