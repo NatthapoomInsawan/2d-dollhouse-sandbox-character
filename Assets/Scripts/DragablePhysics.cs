@@ -4,52 +4,54 @@ using UnityEngine;
 namespace DollhouseCharacter
 {
     [RequireComponent(typeof(Rigidbody2D))]
+    [RequireComponent(typeof(TargetJoint2D))]
     public class DragablePhysics : MonoBehaviour, IDragable
     {
         public bool IsDragging { get; private set; }
-
         public Rigidbody2D Rigidbody2D => rigidBody2D;
 
         [Header("References")]
         [SerializeField] private Rigidbody2D rigidBody2D;
-
-        [Header("Settings")]
-        [SerializeField] private float dragPhysicsScale = 1f;
-
-        private Vector2 pointerPos;
+        [SerializeField] private TargetJoint2D targetJoint;
 
         private float originalGravityScale;
 
+        private void Awake()
+        {
+            if (targetJoint == null) targetJoint = GetComponent<TargetJoint2D>();
+            targetJoint.enabled = false;
+        }
+
         public void StartDrag()
         {
+            targetJoint.enabled = true;
+            targetJoint.target = transform.position;
+
             originalGravityScale = rigidBody2D.gravityScale;
 
             rigidBody2D.angularVelocity = 0;
             rigidBody2D.linearVelocity = Vector2.zero;
             rigidBody2D.gravityScale = 0f;
 
-            rigidBody2D.bodyType = RigidbodyType2D.Kinematic;
+            rigidBody2D.bodyType = RigidbodyType2D.Dynamic;
 
             IsDragging = true;
         }
 
         public void UpdateDrag(Vector2 pointerPos)
         {
-            this.pointerPos = pointerPos;
-            Vector3 newWorldPos = Camera.main.ScreenToWorldPoint(pointerPos);
-
-            rigidBody2D.MovePosition(new Vector3(newWorldPos.x, newWorldPos.y, transform.position.z));
+            Vector3 worldPos = Camera.main.ScreenToWorldPoint(pointerPos);
+            targetJoint.target = new Vector2(worldPos.x, worldPos.y);
         }
 
         public void EndDrag()
         {
-            Vector3 moveVector = (Camera.main.ScreenToWorldPoint(pointerPos) - transform.position) * dragPhysicsScale;
+            IsDragging = false;
 
-            rigidBody2D.bodyType = RigidbodyType2D.Dynamic;
-            rigidBody2D.AddForce(moveVector, ForceMode2D.Impulse);
+            targetJoint.enabled = false;
             rigidBody2D.gravityScale = originalGravityScale;
 
-            IsDragging = false;
+            rigidBody2D.bodyType = RigidbodyType2D.Dynamic;
         }
     }
 }

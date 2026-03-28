@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 3040229410874597234}
   - component: {fileID: 8911037745132823823}
   - component: {fileID: 8118453641819918458}
+  - component: {fileID: 233563406704426889}
   m_Layer: 0
   m_Name: Food
   m_TagString: Untagged
@@ -135,7 +136,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DollhouseCharacter.DragablePhysics
   rigidBody2D: {fileID: 548690681970944510}
-  dragPhysicsScale: 1
+  targetJoint: {fileID: 233563406704426889}
 --- !u!114 &8911037745132823823
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -185,3 +186,23 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 1.34
+--- !u!257 &233563406704426889
+TargetJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4104597023071608540}
+  m_Enabled: 1
+  serializedVersion: 4
+  m_EnableCollision: 1
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_BreakAction: 3
+  m_Anchor: {x: 0, y: 0}
+  m_Target: {x: 2.27, y: 0}
+  m_AutoConfigureTarget: 1
+  m_MaxForce: 10000
+  m_DampingRatio: 1
+  m_Frequency: 10
