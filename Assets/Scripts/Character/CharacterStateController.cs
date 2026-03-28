@@ -14,8 +14,6 @@ namespace DollhouseCharacter.Character
         public bool IsInit { get; private set; }
         public int MaxHunger => maxHunger;
 
-        [SerializeField] private BoolGameEvent testEvent;
-
         [Header("Reference")]
         [SerializeField] private CharacterColliderController colliderController;
         [SerializeField] private Animator characterAnimator;
