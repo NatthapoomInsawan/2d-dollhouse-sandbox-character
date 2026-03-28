@@ -1,4 +1,3 @@
-using Cysharp.Threading.Tasks;
 using DollhouseCharacter.Interfaces;
 using System;
 using UnityEngine;
@@ -8,9 +7,11 @@ namespace DollhouseCharacter.Character
     public class CharacterStateController : MonoBehaviour, INeedInitialize
     {
         public event Action<int> OnHungerUpate;
-        
+        public event Action<int> OnMoodUpdate;
+
         public bool IsInit { get; private set; }
         public int MaxHunger => maxHunger;
+        public int MaxMood => maxMood;
 
         [Header("Reference")]
         [SerializeField] private CharacterColliderController colliderController;
@@ -18,7 +19,9 @@ namespace DollhouseCharacter.Character
 
         [Header("Data State")]
         [SerializeField] private int hunger;
+        [SerializeField] private int mood;
         [SerializeField] private int maxHunger = 100;
+        [SerializeField] private int maxMood = 100;
 
         private CharacterState currentState;
 
@@ -40,6 +43,7 @@ namespace DollhouseCharacter.Character
         {
             IsInit = true;
             OnHungerUpate?.Invoke(hunger);
+            OnMoodUpdate?.Invoke(mood);
         }
 
         private void SetState(CharacterState state)
@@ -130,6 +134,12 @@ namespace DollhouseCharacter.Character
             };
             
             SetTriggerState(eatState);
+        }
+
+        public void ModifyMood(int value)
+        {
+            mood += value;
+            OnMoodUpdate?.Invoke(mood);
         }
 
     }

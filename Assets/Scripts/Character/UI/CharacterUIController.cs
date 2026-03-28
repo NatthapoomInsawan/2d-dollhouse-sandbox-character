@@ -10,6 +10,7 @@ namespace DollhouseCharacter.Character.UI
 
         [Header("UI References")]
         [SerializeField] private HungerUI hungerUI;
+        [SerializeField] private MoodUI moodUI;
 
         private async void Start()
         {
@@ -21,6 +22,7 @@ namespace DollhouseCharacter.Character.UI
         private void BindStateEvent()
         {
             characterStateController.OnHungerUpate += (value) => hungerUI.UpdateHungerBar(value, characterStateController.MaxHunger);
+            characterStateController.OnMoodUpdate += (value) => moodUI.UpdateHungerBar(value, characterStateController.MaxMood);
         }
 
     }
